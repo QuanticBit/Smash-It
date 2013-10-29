@@ -268,9 +268,9 @@ public class Map {
 				} else {
 					continue;
 				}
-				//We close our archive file
-				zipFile.close();
 			}
+			//We close our archive file
+			zipFile.close();
 		} catch (ZipException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
