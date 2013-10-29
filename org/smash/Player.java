@@ -6,7 +6,9 @@ import org.smash.res.Skin;
 import org.xor.utils.GraphicsTools;
 
 import static org.smash.network.GameNetwork.*;
-
+/**
+ * Represents a Smash player
+ */
 public class Player {
 	
 	private static final int xMax = Map.width-1;
@@ -34,12 +36,19 @@ public class Player {
 	private int dead_tick = 0;
 	
 	private Map map;
-	
+	/**
+	 * Create a new player with the specified name and skin
+	 * @param name is the name of the Player
+	 * @param skin is the skin of the player
+	 */
 	public Player(String name, Skin skin){
 		setName(name);
 		setSkin(skin);
 	}
-	
+	/**Get the current image of the player and update its state
+	 * 
+	 * @return an image of the player
+	 */
 	public BufferedImage getImage(){
 		boolean canMove = this.canMove;
 		this.canMove = true;
@@ -52,9 +61,9 @@ public class Player {
 			img = isLookRight() ? skin.getWalkR() : skin.getWalkL();
 		if(!isAlive()){
 			dead_tick++;
-			setAlive(true);
 			this.canMove = false;
-			if(dead_tick>20)
+			//1 tick == 150 ms so >=20 == >=3 s  
+			if(dead_tick>=20)
 				respawn();
 			return GraphicsTools.rotate(img, isLookRight() ? -90 : 90);
 		}else
@@ -62,8 +71,11 @@ public class Player {
 		
 		return canMove ? img : GraphicsTools.invert(img);
 	}
-	
+	/**
+	 * Respawn the player
+	 */
 	private void respawn() {
+		setAlive(true);
 		life = 0;
 		setX(Map.width/2-1);
 		setY(0);
@@ -72,7 +84,9 @@ public class Player {
 		lastMove= NO_MOVE;
 		move = NO_MOVE;
 	}
-
+	/**Fired every time a player kick somewhere this check if the player is concerned and "apply" the kick if he's concerned
+	 * @param p is the player that kicks
+	 */
 	public int onKick(Player p){
 		if(p.getY()!=getY() || !p.isAlive() || !isAlive())
 			return -1;
@@ -98,43 +112,72 @@ public class Player {
 		return (int) (p.isLookRight() ? p.getX()+1 : p.getX()-1);
 	}
 	
-
+	/**
+	 * Get the name of the player
+	 * @return the name of the player
+	 */
 	public String getName() {
 		return name;
 	}
-
+	/**
+	 * Set the name of the player
+	 * @param name is the new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * Get the skin of the player
+	 * @return the skin of the player
+	 */
 	public Skin getSkin() {
 		return skin;
 	}
-
+	/**
+	 * Set the skin of the player
+	 * @param skin is the new skin
+	 */
 	public void setSkin(Skin skin) {
 		this.skin = skin;
 	}
-
+	/**
+	 * Get wether or not this player is alive
+	 * @return if the player is alive
+	 */
 	public boolean isAlive() {
 		return alive;
 	}
-
+	/**Set wether or not the player is alive
+	 * @param alive is the new state of the player
+	 */
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
-
+	/**
+	 * Not implemented yet
+	 */
 	public int getWeapon() {
 		return weapon;
 	}
-
+	/**
+	 * Not implemented yet
+	 */
 	public void setWeapon(int weapon) {
 		this.weapon = weapon;
 	}
-
+	/**
+	 * Get the current move direction of the player
+	 * <p>The move direction is not where the player will move but where he wants to
+	 * @return an integer merge of {@link GameNetwork}
+	 */
 	public int getMove() {
 		return move;
 	}
-
+	/**
+	 * Set the new move direction of the player to the given one
+	 * <p>The move direction is not where the player will move but where he wants to
+	 * @param move is the new move direction
+	 */
 	public void setMove(int move) {
 		//If we can't move then we souldn't change the move 
 		if(!canMove)
@@ -165,23 +208,37 @@ public class Player {
 		else
 			this.move = move;
 	}
-
+	/**
+	 * Get the x coordinates of the player on the map
+	 * @return the horizontal coordinates
+	 */
 	public double getX() {
 		return x;
 	}
-
+	/**
+	 * Set the x coordinates of the player on the map
+	 * @param x is the new horizontal coordinates
+	 */
 	public void setX(double x) {
 		this.x = x;
 	}
-
+	/**
+	 * Get the y coordinates of the player on the map
+	 * @return the vertical coordinates
+	 */
 	public double getY() {
 		return y;
 	}
-
+	/**
+	 * Set the y coordinates of the player on the map
+	 * @param y is the new vertical coordinates
+	 */
 	public void setY(double y) {
 		this.y = y;
 	}
-	
+	/**
+	 * Perform the move action for this player or if you prefer Update the player's position
+	 */
 	public void move(){
 		double posX = x;
 		double posY = y;
@@ -396,51 +453,56 @@ public class Player {
 		if(Math.floor(y)+1>yMax || (map != null && map.isFree((int) x, (int)Math.floor(y)+1)))
 			move = MOVE_DOWN;
 	}
-
+	/**
+	 * Get the map the player is currently playing one
+	 * @return the current map or <b>null</b> if it wasn't set
+	 */
 	public Map getMap() {
 		return map;
 	}
-
+	/**
+	 * Set the map the player is currently playing one
+	 * @param map is the new map
+	 */
 	public void setMap(Map map) {
 		this.map = map;
 	}
-
+	/**
+	 *@return <b>true</b> if he's looking right and <b>false</b> if he's looking to the left
+	 * Get whether the player is looking to the right or to the left
+	 **/
 	public boolean isLookRight() {
 		return lookRight;
 	}
-
+	/**
+	 * Set whether the player is looking to the right or to the left
+	 * @param lookRight : <b>true</b> if he's looking right and <b>false</b> if he's looking to the left
+	 */
 	public void setLookRight(boolean lookRight) {
 		this.lookRight = lookRight;
 	}
-
+	/**Get the current life of the player
+	 * <p>NOTE : the life is a percentage of luck to be killed by the next attack
+	 * @return the current life of the player
+	 */
 	public int getLife() {
 		return life;
 	}
-
+	/**
+	 * Set the current life of the player
+	 * <p>NOTE : the life is a percentage of luck to be killed by the next attack
+	 * @param life is the new life of the player
+	 */
 	public void setLife(int life) {
 		this.life = life;
 	}
-
-	public double getVectorX() {
-		return vectorX;
-	}
-
-	public void setVectorX(double vectorX) {
-		this.vectorX = vectorX;
-	}
-
-	public double getVectorY() {
-		return vectorY;
-	}
-
-	public void setVectorY(double vectorY) {
-		this.vectorY = vectorY;
-	}
-
-	public void setLastMove(int parseInt) {
+	/**Set the last move direction and update player's direction ( right or left )
+	 * @param lastMove is the new last move direction
+	 */
+	public void setLastMove(int lastMove) {
 		move = NO_MOVE;
 		canMove = true;
-		this.lastMove = parseInt;
+		this.lastMove = lastMove;
 		switch(lastMove){
 		case MOVE_LEFT+MOVE_UP:
 			setLookRight(false);
@@ -462,11 +524,17 @@ public class Player {
 			break;
 		}
 	}
-
+	/**
+	 * Get the last move the player performed
+	 * @return his last move direction
+	 */
 	public int getLastMove() {
 		return lastMove;
 	}
-
+	/**
+	 * Get whether or not the player can choose the move direction
+	 * @return if the player can choose hois move direction or not
+	 */
 	public boolean canMove() {
 		return canMove;
 	}
