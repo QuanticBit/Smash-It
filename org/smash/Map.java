@@ -59,7 +59,7 @@ public class Map {
 	 */
 	public static final int BONUS_WEAP_2 = 3;
 	/**
-	 * Represent a bonus that when grabbed will change the grabber weapon as a hammer
+	 * Represent a bonus that when grabbed will change the grabber weapon as a gun
 	 */
 	public static final int BONUS_WEAP_3 = 4;
 	/**
